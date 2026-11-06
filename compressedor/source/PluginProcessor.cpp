@@ -68,9 +68,8 @@ void PluginProcessor::changeProgramName(int index,
 }
 
 void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
-  // Use this method as the place to do any pre-playback
-  // initialisation that you need..
-  juce::ignoreUnused(sampleRate, samplesPerBlock);
+
+  compressedor.prepare(sampleRate, samplesPerBlock, getTotalNumInputChannels());
 }
 
 void PluginProcessor::releaseResources() {
@@ -118,17 +117,9 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     buffer.clear(i, 0, buffer.getNumSamples());
 
-  // This is the place where you'd normally do the guts of your plugin's
-  // audio processing...
-  // Make sure to reset the state if your inner loop is processing
-  // the samples and the outer loop is handling the channels.
-  // Alternatively, you can process the samples with the channels
-  // interleaved by keeping the same state.
-  for (int channel = 0; channel < totalNumInputChannels; ++channel) {
-    auto* channelData = buffer.getWritePointer(channel);
-    juce::ignoreUnused(channelData);
-    // ..do something to the data...
-  }
+  compressedor.setThreshold(parameters.threshold.get());
+
+  compressedor.process(buffer);
 }
 
 bool PluginProcessor::hasEditor() const {
