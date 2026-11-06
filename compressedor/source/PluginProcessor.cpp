@@ -132,11 +132,11 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 }
 
 bool PluginProcessor::hasEditor() const {
-  return true;  // (change this to false if you choose to not supply an editor)
+  return true; 
 }
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor() {
-  return new PluginEditor(*this);
+  return new juce::GenericAudioProcessorEditor(*this);
 }
 
 void PluginProcessor::getStateInformation(juce::MemoryBlock& destData) {

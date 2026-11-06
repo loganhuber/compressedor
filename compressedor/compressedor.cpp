@@ -1,5 +1,6 @@
 #include "compressedor.h"
 
+#include "source/Parameters.cpp"
 #include "source/PluginProcessor.cpp"
 #include "source/PluginEditor.cpp"
 
