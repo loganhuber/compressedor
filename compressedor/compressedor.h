@@ -21,9 +21,12 @@ END_JUCE_MODULE_DECLARATION
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_audio_basics/juce_audio_basics.h>
+
+#include "include/Parameters.h"
 
 
-#include "include/compressedor.h"
+#include "include/Compressedor.h"
 #include "include/PluginProcessor.h"
 #include "include/PluginEditor.h"
 
