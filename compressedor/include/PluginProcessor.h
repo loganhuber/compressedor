@@ -1,6 +1,6 @@
 #pragma once
 
-namespace audio_plugin {
+namespace compressedor {
 class PluginProcessor : public juce::AudioProcessor {
 public:
   PluginProcessor();
@@ -35,4 +35,4 @@ public:
 private:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginProcessor)
 };
-}  // namespace audio_plugin
+}  // namespace compressedor

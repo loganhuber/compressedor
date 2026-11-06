@@ -14,7 +14,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0141
 # Sets the minimum deployment target
 # macOS 10.11 is the minimum required by JUCE
 set(CMAKE_OSX_DEPLOYMENT_TARGET
-    "10.11"
+    "10.13"
     CACHE STRING "" FORCE
 )
 # Builds a binary that works on Apple Silicon (arm64) and Intel-based Macs
@@ -24,7 +24,7 @@ set(CMAKE_OSX_ARCHITECTURES
 )
 
 # Sets a few variables, like PROJECT_NAME. VERSION is needed by JUCE.
-project(AudioPlugin)
+project(compressedor)
 
 # Set the C++ standard only if this project is standalone;
 # otherwise, let clients decide.
@@ -89,9 +89,9 @@ endif()
 
 # Adds a plugin target (that's basically what the Projucer does).
 juce_add_plugin(
-  AudioPlugin
+  compressedor_plugin
   COMPANY_NAME
-  "MyCompany" # change this
+  "lchaudio" # change this
   IS_SYNTH
   FALSE # may change this
   NEEDS_MIDI_INPUT
@@ -101,14 +101,14 @@ juce_add_plugin(
   PLUGIN_MANUFACTURER_CODE
   Mcmp # change this (for max compatibility, first letter must be uppercase, remaining lowercase)
   PLUGIN_CODE
-  Expl # change this (for max compatibility, first letter must be uppercase, remaining lowercase)
+  Cmpr # change this (for max compatibility, first letter must be uppercase, remaining lowercase)
   FORMATS
   AAX
   AU
   Standalone
   VST3
   PRODUCT_NAME
-  "YourPluginName" # change this
+  "Compressedor" # change this
   VERSION
   0.0.0 # 0.0.0 forces AU host to always rescan the plugin. Change this before releasing
   COPY_PLUGIN_AFTER_BUILD
@@ -117,14 +117,14 @@ juce_add_plugin(
 )
 
 # These definitions are recommended by JUCE
-target_compile_definitions(AudioPlugin PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0)
+target_compile_definitions(compressedor_plugin PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0)
 
 # We want to have a "library" target with PluginProcessor and PluginEditor to use in plugins and in tests.
 # Library targets that use JUCE modules non-PRIVATEly should be created as JUCE module themselves,
 # not as static or shared libraries. Otherwise, you risk buggy JUCE build configuration.
 # This is unlikely on small projects, but we want to use the best practices from the start
 # (and migrating to JUCE modules at a late development stage is a nightmare, trust me).
-juce_add_module(audio_plugin ALIAS_NAMESPACE my_company)
+juce_add_module(compressedor ALIAS_NAMESPACE compressedor)
 
 # In the following, we re-export some of the compile-time definitions derived from arguments of
 # juce_add_plugin(). This is necessary to maintain consistent behavior in built plugins and in tests.
@@ -136,21 +136,21 @@ juce_add_module(audio_plugin ALIAS_NAMESPACE my_company)
 # (1. you can forget to do it 2. you don't know what you're defining)
 # than to re-export the meaningful ones for audio_plugin and just link against the module to use it.
 target_compile_definitions(
-  audio_plugin
-  INTERFACE JUCE_PLUGIN_NAME="$<TARGET_PROPERTY:AudioPlugin,JUCE_PLUGIN_NAME>"
-            JUCE_IS_MIDI_EFFECT=$<BOOL:$<TARGET_PROPERTY:AudioPlugin,JUCE_IS_MIDI_EFFECT>>
-            JUCE_IS_SYNTH=$<BOOL:$<TARGET_PROPERTY:AudioPlugin,JUCE_IS_SYNTH>>
-            JUCE_NEEDS_MIDI_INPUT=$<BOOL:$<TARGET_PROPERTY:AudioPlugin,JUCE_NEEDS_MIDI_INPUT>>
-            JUCE_NEEDS_MIDI_OUTPUT=$<BOOL:$<TARGET_PROPERTY:AudioPlugin,JUCE_NEEDS_MIDI_OUTPUT>>
+  compressedor
+  INTERFACE JUCE_PLUGIN_NAME="$<TARGET_PROPERTY:compressedor,JUCE_PLUGIN_NAME>"
+            JUCE_IS_MIDI_EFFECT=$<BOOL:$<TARGET_PROPERTY:compressedor_plugin,JUCE_IS_MIDI_EFFECT>>
+            JUCE_IS_SYNTH=$<BOOL:$<TARGET_PROPERTY:compressedor_plugin,JUCE_IS_SYNTH>>
+            JUCE_NEEDS_MIDI_INPUT=$<BOOL:$<TARGET_PROPERTY:compressedor_plugin,JUCE_NEEDS_MIDI_INPUT>>
+            JUCE_NEEDS_MIDI_OUTPUT=$<BOOL:$<TARGET_PROPERTY:compressedor_plugin,JUCE_NEEDS_MIDI_OUTPUT>>
 )
 
 # Enables strict C++ warnings and treats warnings as errors.
-target_compile_options(audio_plugin INTERFACE "${PROJECT_WARNINGS_CXX}")
+target_compile_options(compressedor INTERFACE "${PROJECT_WARNINGS_CXX}")
 
 # We need to link the plugin targets with the module containing our code.
 target_link_libraries(
-  AudioPlugin
-  PRIVATE my_company::audio_plugin
+  compressedor_plugin
+  PRIVATE compressedor::compressedor
   PUBLIC juce::juce_recommended_config_flags juce::juce_recommended_lto_flags juce::juce_recommended_warning_flags
 )
 

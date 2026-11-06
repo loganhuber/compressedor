@@ -1,4 +1,4 @@
-namespace audio_plugin {
+namespace compressedor {
 PluginProcessor::PluginProcessor()
     : AudioProcessor(
           BusesProperties()
@@ -157,5 +157,5 @@ void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
 // This creates new instances of the plugin.
 // This function definition must be in the global namespace.
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() {
-  return new audio_plugin::PluginProcessor();
+  return new compressedor::PluginProcessor();
 }

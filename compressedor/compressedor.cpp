@@ -1,4 +1,4 @@
-#include "audio_plugin.h"
+#include "compressedor.h"
 
 #include "source/PluginProcessor.cpp"
 #include "source/PluginEditor.cpp"
