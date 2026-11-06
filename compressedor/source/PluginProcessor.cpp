@@ -117,7 +117,12 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     buffer.clear(i, 0, buffer.getNumSamples());
 
-  compressedor.setThreshold(parameters.threshold.get());
+  compressedor.setCompressorSettings(
+    parameters.threshold.get(),
+    parameters.attack.get(),
+    parameters.release.get(),
+    parameters.ratio.get()
+  );
 
   compressedor.process(buffer);
 }

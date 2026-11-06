@@ -6,6 +6,9 @@ namespace compressedor {
         explicit Parameters(juce::AudioProcessor&);
 
         juce::AudioParameterFloat& threshold;
+        juce::AudioParameterFloat& attack;
+        juce::AudioParameterFloat& release;
+        juce::AudioParameterFloat& ratio;
 
 
         JUCE_DECLARE_NON_COPYABLE(Parameters)
