@@ -124,6 +124,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     parameters.ratio.get()
   );
 
+  compressedor.setSaturation(parameters.threshold.get(), parameters.ratio.get());
+
   compressedor.process(buffer);
 }
 

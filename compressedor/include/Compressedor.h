@@ -15,6 +15,13 @@ namespace compressedor {
             attack = attackLevel;
             release = releaseLevel;
             ratio = ratioLevel;
+
+            setSaturation(thresholdLevel, ratioLevel);
+        }
+
+        void setSaturation(float thresholdLevel, float ratioLevel) {
+            float newSaturation = (-thresholdLevel + ratioLevel) / 100;
+            saturation.setTargetValue(newSaturation);
         }
 
         void prepare(double sampleRate, int expectedMaxFramesPerBlock, int numChannels) {
@@ -29,6 +36,8 @@ namespace compressedor {
             attack.reset(sampleRate, 0.1f);
             release.reset(sampleRate, 0.1f);
             ratio.reset(sampleRate, 0.1f);
+
+            saturation.reset(sampleRate, 0.1f);
 
             juce::dsp::ProcessSpec spec {
                 .sampleRate = sampleRate,
@@ -49,6 +58,8 @@ namespace compressedor {
                 const auto nextRelease = release.getNextValue();
                 const auto nextRatio = ratio.getNextValue();
 
+                const auto nextSaturation = saturation.getNextValue();
+
                 compressor.setThreshold(nextThreshold);
                 compressor.setAttack(nextAttack);
                 compressor.setRelease(nextRelease);
@@ -57,8 +68,9 @@ namespace compressedor {
                 for (const auto channelIndex : std::views::iota(0, buffer.getNumChannels())) {
                     const auto inputSample = buffer.getSample(channelIndex, frameIndex);
 
-                    const auto compressedSample = compressor.processSample(channelIndex, inputSample);
-                    
+                    const auto shaped = std::tanh(inputSample * nextSaturation) / std::tanh(nextSaturation);
+                    const auto compressedSample = compressor.processSample(channelIndex, shaped);
+
                     buffer.setSample(channelIndex, frameIndex, compressedSample);
 
                 }
@@ -74,6 +86,8 @@ namespace compressedor {
             juce::SmoothedValue<float> attack = 3.f;
             juce::SmoothedValue<float> release = 3.f;
             juce::SmoothedValue<float> ratio = 1.f;
+
+            juce::SmoothedValue<float> saturation = 0.f;
 
     };
 } // namespace compressedor
