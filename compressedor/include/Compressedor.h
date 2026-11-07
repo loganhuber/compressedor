@@ -27,8 +27,45 @@ namespace compressedor {
             saturation.setTargetValue(newSaturation);
         }
 
-        void prepare(double sampleRate, int expectedMaxFramesPerBlock, int numChannels) {
+        void setMidFilter(double sampleRate, juce::dsp::ProcessSpec spec) {
+            float midCenterFreqHz = 500.0f;
+            float midQ = 3.f; 
+            float neutralGain = juce::Decibels::decibelsToGain(-5.f);
 
+            auto coefficiants = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
+                sampleRate, 
+                midCenterFreqHz,
+                midQ,
+                neutralGain
+            );
+
+            for (auto& midFilter : midFilters) {
+                midFilter.coefficients = coefficiants;
+                midFilter.prepare(spec);
+            }
+        }
+
+        void setHighFilters(double sampleRate, juce::dsp::ProcessSpec spec) {
+
+            float highCenterFreqHz = 5000.f;
+            float highQ = 1.f;
+            float neutralGain = juce::Decibels::decibelsToGain(.7f);
+
+            auto coefficients = juce::dsp::IIR::Coefficients<float>::makeHighShelf(
+                sampleRate,
+                highCenterFreqHz,
+                highQ,
+                neutralGain
+            );
+
+            for (auto& highFilter : highFilters) {
+                highFilter.coefficients = coefficients;
+                highFilter.prepare(spec);
+            }
+        }
+
+
+        void prepare(double sampleRate, int expectedMaxFramesPerBlock, int numChannels) {
 
             compressor.reset();
             compressor.setAttack(3.f);
@@ -50,16 +87,17 @@ namespace compressedor {
             };
 
             compressor.prepare(spec);
+            setMidFilter(sampleRate, spec);
+            setHighFilters(sampleRate, spec);
 
         }
 
         void process(juce::AudioBuffer<float>& buffer) {
 
             juce::ScopedNoDenormals noDenormals;
-
             juce::dsp::AudioBlock<float> originalBuffer (buffer);
-
             juce::dsp::AudioBlock<float> upsampledBlock = overSampler->processSamplesUp(originalBuffer);
+
 
             for (size_t frameIndex = 0; frameIndex < upsampledBlock.getNumSamples(); ++frameIndex) {
 
@@ -78,11 +116,13 @@ namespace compressedor {
                 for (size_t channelIndex = 0; channelIndex < upsampledBlock.getNumChannels(); ++channelIndex) {
                     const auto inputSample = upsampledBlock.getSample(channelIndex, frameIndex);
 
-                    const auto shaped = nextSaturation > 1.0e-6f // check if 
+                    const auto shaped = nextSaturation > 1.0e-6f // check if close to zero
                         ? std::tanh(inputSample * nextSaturation) / std::tanh(nextSaturation)
                         : inputSample;
 
-                    const auto compressedSample = compressor.processSample(channelIndex, shaped);
+                    const auto midProccessed = midFilters[static_cast<size_t>(channelIndex)].processSample(shaped);
+                    const auto highProccessed = highFilters[static_cast<size_t>(channelIndex)].processSample(midProccessed);
+                    const auto compressedSample = compressor.processSample(channelIndex, highProccessed);
 
                     upsampledBlock.setSample(channelIndex, frameIndex, compressedSample);
                 }
@@ -102,6 +142,11 @@ namespace compressedor {
             juce::SmoothedValue<float> ratio = 1.f;
 
             juce::SmoothedValue<float> saturation = 0.f;
+
+
+            std::array<juce::dsp::IIR::Filter<float>, 2> midFilters;
+            std::array<juce::dsp::IIR::Filter<float>, 2> highFilters;
+
 
 
 
