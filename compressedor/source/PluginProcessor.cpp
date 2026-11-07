@@ -69,7 +69,28 @@ void PluginProcessor::changeProgramName(int index,
 
 void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
 
-  compressedor.prepare(sampleRate, samplesPerBlock, getTotalNumInputChannels());
+  const auto numChannels = getTotalNumInputChannels();
+
+    compressedor.overSampler = std::make_unique<juce::dsp::Oversampling<float>>(
+        numChannels,
+        2,
+        juce::dsp::Oversampling<float>::FilterType::filterHalfBandPolyphaseIIR,
+        true,
+        true
+    );
+
+    compressedor.overSampler->initProcessing (static_cast<size_t>(samplesPerBlock));
+    compressedor.overSampler->reset();
+
+    setLatencySamples(static_cast<int> (compressedor.overSampler->getLatencyInSamples()));
+
+    const auto factor = compressedor.overSampler->getOversamplingFactor();
+
+    compressedor.prepare(
+      sampleRate * static_cast<double>(factor),
+      samplesPerBlock * static_cast<int>(factor),
+      getTotalNumInputChannels()
+    );
 }
 
 void PluginProcessor::releaseResources() {
@@ -116,6 +137,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   // this code if your algorithm always overwrites all the output channels.
   for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     buffer.clear(i, 0, buffer.getNumSamples());
+
+
 
   compressedor.setCompressorSettings(
     parameters.threshold.get(),

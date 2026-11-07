@@ -5,16 +5,19 @@ namespace compressedor {
     class Compressedor {
         public:
 
+        std::unique_ptr<juce::dsp::Oversampling<float>> overSampler;
+
+
         void setCompressorSettings(
                     float thresholdLevel, 
                     float attackLevel, 
                     float releaseLevel, 
                     float ratioLevel) 
         {
-            threshold = thresholdLevel;
-            attack = attackLevel;
-            release = releaseLevel;
-            ratio = ratioLevel;
+            threshold.setTargetValue(thresholdLevel);
+            attack.setTargetValue(attackLevel);
+            release.setTargetValue(releaseLevel);
+            ratio.setTargetValue(ratioLevel);
 
             setSaturation(thresholdLevel, ratioLevel);
         }
@@ -25,6 +28,7 @@ namespace compressedor {
         }
 
         void prepare(double sampleRate, int expectedMaxFramesPerBlock, int numChannels) {
+
 
             compressor.reset();
             compressor.setAttack(3.f);
@@ -51,7 +55,13 @@ namespace compressedor {
 
         void process(juce::AudioBuffer<float>& buffer) {
 
-            for (const auto frameIndex : std::views::iota(0, buffer.getNumSamples())) {
+            juce::ScopedNoDenormals noDenormals;
+
+            juce::dsp::AudioBlock<float> originalBuffer (buffer);
+
+            juce::dsp::AudioBlock<float> upsampledBlock = overSampler->processSamplesUp(originalBuffer);
+
+            for (size_t frameIndex = 0; frameIndex < upsampledBlock.getNumSamples(); ++frameIndex) {
 
                 const auto nextThreshold = threshold.getNextValue();
                 const auto nextAttack = attack.getNextValue();
@@ -65,16 +75,20 @@ namespace compressedor {
                 compressor.setRelease(nextRelease);
                 compressor.setRatio(nextRatio);
 
-                for (const auto channelIndex : std::views::iota(0, buffer.getNumChannels())) {
-                    const auto inputSample = buffer.getSample(channelIndex, frameIndex);
+                for (size_t channelIndex = 0; channelIndex < upsampledBlock.getNumChannels(); ++channelIndex) {
+                    const auto inputSample = upsampledBlock.getSample(channelIndex, frameIndex);
 
-                    const auto shaped = std::tanh(inputSample * nextSaturation) / std::tanh(nextSaturation);
+                    const auto shaped = nextSaturation > 1.0e-6f // check if 
+                        ? std::tanh(inputSample * nextSaturation) / std::tanh(nextSaturation)
+                        : inputSample;
+
                     const auto compressedSample = compressor.processSample(channelIndex, shaped);
 
-                    buffer.setSample(channelIndex, frameIndex, compressedSample);
-
+                    upsampledBlock.setSample(channelIndex, frameIndex, compressedSample);
                 }
             }
+
+            overSampler->processSamplesDown (originalBuffer);
         }
 
 
@@ -88,6 +102,8 @@ namespace compressedor {
             juce::SmoothedValue<float> ratio = 1.f;
 
             juce::SmoothedValue<float> saturation = 0.f;
+
+
 
     };
 } // namespace compressedor
