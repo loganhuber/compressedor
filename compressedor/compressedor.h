@@ -29,7 +29,7 @@ END_JUCE_MODULE_DECLARATION
 
 #include "include/Parameters.h"
 
-
+#include "include/JsonSerializer.h"
 #include "include/Compressedor.h"
 #include "include/PluginProcessor.h"
 #include "include/PluginEditor.h"

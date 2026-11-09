@@ -2,7 +2,7 @@
 
 #include "compressedor.h"
 
-
+#include "source/JsonSerializer.cpp"
 #include "source/Parameters.cpp"
 #include "source/PluginProcessor.cpp"
 #include "source/PluginEditor.cpp"
