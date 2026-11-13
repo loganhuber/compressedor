@@ -28,7 +28,6 @@ END_JUCE_MODULE_DECLARATION
 #include <ranges>
 
 #include "include/Parameters.h"
-
 #include "include/JsonSerializer.h"
 #include "include/Compressedor.h"
 #include "include/PluginProcessor.h"
