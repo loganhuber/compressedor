@@ -15,7 +15,7 @@ namespace compressedor
          auto parameter = std::make_unique<juce::AudioParameterFloat>(
             juce::ParameterID("Threshold", versionHint),
             "Threshold",
-            juce::NormalisableRange{-24.f, 0.f, 0.1f},
+            juce::NormalisableRange{-34.f, 0.f, 0.1f},
             0.f,
             juce::AudioParameterFloatAttributes{}.withLabel("dB")
          );

@@ -43,6 +43,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   attackLabel.setText("Attack", juce::dontSendNotification);
   releaseLabel.setText("Release", juce::dontSendNotification);
   ratioLabel.setText("Ratio", juce::dontSendNotification);
+  makeupLabel.setText("Makeup", juce::dontSendNotification);
 
   addAndMakeVisible(background);
 
@@ -56,6 +57,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   addAndMakeVisible(attackLabel);
   addAndMakeVisible(releaseLabel);
   addAndMakeVisible(ratioLabel);
+  addAndMakeVisible(makeupLabel);
 
   setSize(600, 400);
 }
@@ -81,6 +83,8 @@ void PluginEditor::resized() {
   ratioSlider.setBounds({425, 125, 100, 100});
   ratioLabel.setBounds({455, 207, 100, 40});
 
-  makeupSlider.setBounds({250, 150, 100, 100});
+  makeupSlider.setBounds({245, 150, 100, 100});
+  makeupLabel.setBounds({260, 232, 100, 40});
+
 }
 }  // namespace compressedor

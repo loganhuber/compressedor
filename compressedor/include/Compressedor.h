@@ -23,7 +23,7 @@ namespace compressedor {
         }
 
         void setSaturation(float thresholdLevel, float ratioLevel) {
-            float newSaturation = (-thresholdLevel + ratioLevel) / 100;
+            float newSaturation = ((-thresholdLevel + ratioLevel) * .5f) / 100;
             saturation.setTargetValue(newSaturation);
         }
 

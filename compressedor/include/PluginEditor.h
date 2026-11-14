@@ -30,6 +30,7 @@ private:
 
   juce::Slider makeupSlider;
   juce::SliderParameterAttachment makeupAttachment;
+  juce::Label makeupLabel;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
