@@ -9,6 +9,7 @@ namespace compressedor {
         juce::AudioParameterFloat& attack;
         juce::AudioParameterFloat& release;
         juce::AudioParameterFloat& ratio;
+        juce::AudioParameterFloat& makeup;
 
 
         JUCE_DECLARE_NON_COPYABLE(Parameters)

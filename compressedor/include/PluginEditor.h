@@ -28,6 +28,9 @@ private:
   juce::SliderParameterAttachment ratioAttachment;
   juce::Label ratioLabel;
 
+  juce::Slider makeupSlider;
+  juce::SliderParameterAttachment makeupAttachment;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };

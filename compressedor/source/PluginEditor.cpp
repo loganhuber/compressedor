@@ -4,7 +4,8 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     thresholdAttachment{p.getParameterRefs().threshold, thresholdSlider},
     attackAttachment{p.getParameterRefs().attack, attackSlider},
     releaseAttachment{p.getParameterRefs().release, releaseSlider},
-    ratioAttachment{p.getParameterRefs().ratio, ratioSlider}
+    ratioAttachment{p.getParameterRefs().ratio, ratioSlider},
+    makeupAttachment{p.getParameterRefs().makeup, makeupSlider}
     {
 
   
@@ -32,6 +33,11 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   ratioSlider.setPopupDisplayEnabled(true, true, this);
   ratioSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
 
+  makeupSlider.setSliderStyle(juce::Slider::Rotary);
+  makeupSlider.setPopupDisplayEnabled(true, true, this);
+  makeupSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
+  makeupSlider.setTextValueSuffix("dB");
+
   // labels 
   thresholdLabel.setText("Threshold", juce::dontSendNotification);
   attackLabel.setText("Attack", juce::dontSendNotification);
@@ -44,6 +50,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   addAndMakeVisible(attackSlider);
   addAndMakeVisible(releaseSlider);
   addAndMakeVisible(ratioSlider);
+  addAndMakeVisible(makeupSlider);
 
   addAndMakeVisible(thresholdLabel);
   addAndMakeVisible(attackLabel);
@@ -73,5 +80,7 @@ void PluginEditor::resized() {
 
   ratioSlider.setBounds({425, 125, 100, 100});
   ratioLabel.setBounds({455, 207, 100, 40});
+
+  makeupSlider.setBounds({250, 150, 100, 100});
 }
 }  // namespace compressedor

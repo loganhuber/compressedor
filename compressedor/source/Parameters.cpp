@@ -63,6 +63,17 @@ namespace compressedor
          return addParameterToProcessor(processor, std::move(parameter));
         }
 
+        juce::AudioParameterFloat& createMakeupParameter(juce::AudioProcessor& processor) {
+         constexpr int versionHint = 1;
+         auto parameter = std::make_unique<juce::AudioParameterFloat>(
+            juce::ParameterID("Makeup", versionHint),
+            "Makeup",
+            juce::NormalisableRange(1.f, 10.f, .1f),
+            1.f, 
+            juce::AudioParameterFloatAttributes{}.withLabel("dB")
+         );
+         return addParameterToProcessor(processor, std::move(parameter));
+        }
 
 
      }
@@ -71,7 +82,8 @@ namespace compressedor
      threshold{createThresholdParameter(processor)},
      attack{createAttackParameter(processor)},
      release{createReleaseParameter(processor)},
-     ratio{createRatioParameter(processor)}
+     ratio{createRatioParameter(processor)},
+     makeup{createMakeupParameter(processor)}
      {
       juce::ignoreUnused(processor);
      }

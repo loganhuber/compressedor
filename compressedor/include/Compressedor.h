@@ -27,6 +27,10 @@ namespace compressedor {
             saturation.setTargetValue(newSaturation);
         }
 
+        void setMakeup(float newMakeup) {
+            makeup.setTargetValue(juce::Decibels::decibelsToGain(newMakeup));
+        }
+
         void setMidFilter(double sampleRate, juce::dsp::ProcessSpec spec) {
             float midCenterFreqHz = 500.0f;
             float midQ = 3.f; 
@@ -77,6 +81,7 @@ namespace compressedor {
             attack.reset(sampleRate, 0.1f);
             release.reset(sampleRate, 0.1f);
             ratio.reset(sampleRate, 0.1f);
+            makeup.reset(sampleRate, 0.1f);
 
             saturation.reset(sampleRate, 0.1f);
 
@@ -89,6 +94,7 @@ namespace compressedor {
             compressor.prepare(spec);
             setMidFilter(sampleRate, spec);
             setHighFilters(sampleRate, spec);
+            
 
         }
 
@@ -105,6 +111,7 @@ namespace compressedor {
                 const auto nextAttack = attack.getNextValue();
                 const auto nextRelease = release.getNextValue();
                 const auto nextRatio = ratio.getNextValue();
+                const auto nextMakeup = makeup.getNextValue();
 
                 const auto nextSaturation = saturation.getNextValue();
 
@@ -123,8 +130,9 @@ namespace compressedor {
                     const auto midProccessed = midFilters[static_cast<size_t>(channelIndex)].processSample(shaped);
                     const auto highProccessed = highFilters[static_cast<size_t>(channelIndex)].processSample(midProccessed);
                     const auto compressedSample = compressor.processSample(channelIndex, highProccessed);
+                    const auto outputSample = nextMakeup * compressedSample;
 
-                    upsampledBlock.setSample(channelIndex, frameIndex, compressedSample);
+                    upsampledBlock.setSample(channelIndex, frameIndex, outputSample);
                 }
             }
 
@@ -140,6 +148,7 @@ namespace compressedor {
             juce::SmoothedValue<float> attack = 3.f;
             juce::SmoothedValue<float> release = 3.f;
             juce::SmoothedValue<float> ratio = 1.f;
+            juce::SmoothedValue<float> makeup = 1.f;
 
             juce::SmoothedValue<float> saturation = 0.f;
 
