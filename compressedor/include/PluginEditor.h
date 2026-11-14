@@ -10,6 +10,8 @@ public:
 
 private:
 
+  juce::ImageComponent background;
+  
   juce::Slider thresholdSlider;
   juce::SliderParameterAttachment thresholdAttachment;
   juce::Label thresholdLabel;

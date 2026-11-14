@@ -126,6 +126,19 @@ target_compile_definitions(compressedor_plugin PRIVATE JUCE_WEB_BROWSER=0 JUCE_U
 # (and migrating to JUCE modules at a late development stage is a nightmare, trust me).
 juce_add_module(compressedor ALIAS_NAMESPACE compressedor)
 
+
+juce_add_binary_data(compressedor_assets
+  HEADER_NAME
+    "CompressedorAssets.h"
+  NAMESPACE
+    compressedor::assets
+  SOURCES
+    assets/compressedorBackground.png
+    # TODO: Add custom font files
+)
+add_library(compressedor::compressedor_assets ALIAS compressedor_assets)
+
+
 # In the following, we re-export some of the compile-time definitions derived from arguments of
 # juce_add_plugin(). This is necessary to maintain consistent behavior in built plugins and in tests.
 # Check juce/extras/Build/CMake/JUCEUtils.cmake to see how they are defined for the AudioPlugin target.
@@ -146,6 +159,9 @@ target_compile_definitions(
 
 # Enables strict C++ warnings and treats warnings as errors.
 target_compile_options(compressedor INTERFACE "${PROJECT_WARNINGS_CXX}")
+
+target_link_libraries(compressedor INTERFACE compressedor::compressedor_assets)
+
 
 # We need to link the plugin targets with the module containing our code.
 target_link_libraries(

@@ -5,6 +5,10 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     attackAttachment{p.getParameterRefs().attack, attackSlider} {
 
   
+  background.setImage(juce::ImageCache::getFromMemory(
+    assets::compressedorBackground_png, assets::compressedorBackground_pngSize
+  ));
+  
   thresholdSlider.setSliderStyle(juce::Slider::Rotary);
   thresholdSlider.setPopupDisplayEnabled(true, true, this);
   thresholdSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
@@ -20,7 +24,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   thresholdLabel.setText("Threshold", juce::dontSendNotification);
   attackLabel.setText("Attack", juce::dontSendNotification);
 
-
+  addAndMakeVisible(background);
   addAndMakeVisible(thresholdSlider);
   addAndMakeVisible(attackSlider);
   addAndMakeVisible(thresholdLabel);
@@ -30,9 +34,10 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
 void PluginEditor::paint(juce::Graphics& g) {
   // (Our component is opaque, so we must completely fill the background with a
+  juce::ignoreUnused(g);
   // solid colour)
-  g.fillAll(
-      getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+  // g.fillAll(
+  //     getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 
   // g.setColour(juce::Colours::white);
   // g.setFont(15.0f);
@@ -42,7 +47,8 @@ void PluginEditor::paint(juce::Graphics& g) {
 }
 
 void PluginEditor::resized() {
-  // const auto bounds = getLocalBounds();
+  const auto bounds = getLocalBounds();
+  background.setBounds(bounds);
 
   attackSlider.setBounds({25, 150, 100, 100});
   attackLabel.setBounds({300, 300, 100, 40});
