@@ -35,24 +35,16 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 void PluginEditor::paint(juce::Graphics& g) {
   // (Our component is opaque, so we must completely fill the background with a
   juce::ignoreUnused(g);
-  // solid colour)
-  // g.fillAll(
-  //     getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-
-  // g.setColour(juce::Colours::white);
-  // g.setFont(15.0f);
-  // g.drawFittedText("Hello World!", getLocalBounds(),
-  //                  juce::Justification::centred, 1);
-
 }
 
 void PluginEditor::resized() {
   const auto bounds = getLocalBounds();
   background.setBounds(bounds);
 
-  attackSlider.setBounds({25, 150, 100, 100});
-  attackLabel.setBounds({300, 300, 100, 40});
-  thresholdSlider.setBounds({25, 25, 100, 100});
-  thresholdLabel.setBounds({25, 45, 100, 40});
+  attackSlider.setBounds({25, 250, 100, 100});
+  attackLabel.setBounds({50, 340, 100, 40});
+
+  thresholdSlider.setBounds({25, 125, 100, 100});
+  thresholdLabel.setBounds({45, 215, 100, 40});
 }
 }  // namespace compressedor
