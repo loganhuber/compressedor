@@ -2,7 +2,10 @@ namespace compressedor {
 PluginEditor::PluginEditor(PluginProcessor& p)
     : AudioProcessorEditor(&p), 
     thresholdAttachment{p.getParameterRefs().threshold, thresholdSlider},
-    attackAttachment{p.getParameterRefs().attack, attackSlider} {
+    attackAttachment{p.getParameterRefs().attack, attackSlider},
+    releaseAttachment{p.getParameterRefs().release, releaseSlider},
+    ratioAttachment{p.getParameterRefs().ratio, ratioSlider}
+    {
 
   
   background.setImage(juce::ImageCache::getFromMemory(
@@ -19,16 +22,34 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   attackSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
   attackSlider.setTextValueSuffix("ms");
 
+  releaseSlider.setSliderStyle(juce::Slider::Rotary);
+  releaseSlider.setPopupDisplayEnabled(true, true, this);
+  releaseSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
+  releaseSlider.setTextValueSuffix("ms");
+
+
+  ratioSlider.setSliderStyle(juce::Slider::Rotary);
+  ratioSlider.setPopupDisplayEnabled(true, true, this);
+  ratioSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
 
   // labels 
   thresholdLabel.setText("Threshold", juce::dontSendNotification);
   attackLabel.setText("Attack", juce::dontSendNotification);
+  releaseLabel.setText("Release", juce::dontSendNotification);
+  ratioLabel.setText("Ratio", juce::dontSendNotification);
 
   addAndMakeVisible(background);
+
   addAndMakeVisible(thresholdSlider);
   addAndMakeVisible(attackSlider);
+  addAndMakeVisible(releaseSlider);
+  addAndMakeVisible(ratioSlider);
+
   addAndMakeVisible(thresholdLabel);
   addAndMakeVisible(attackLabel);
+  addAndMakeVisible(releaseLabel);
+  addAndMakeVisible(ratioLabel);
+
   setSize(600, 400);
 }
 
@@ -46,5 +67,11 @@ void PluginEditor::resized() {
 
   thresholdSlider.setBounds({25, 125, 100, 100});
   thresholdLabel.setBounds({45, 215, 100, 40});
+
+  releaseSlider.setBounds({475, 250, 100, 100});
+  releaseLabel.setBounds({475, 340, 100, 40});
+
+  ratioSlider.setBounds({475, 125, 100, 100});
+  ratioLabel.setBounds({475, 215, 100, 40});
 }
 }  // namespace compressedor
