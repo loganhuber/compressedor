@@ -62,16 +62,16 @@ void PluginEditor::resized() {
   const auto bounds = getLocalBounds();
   background.setBounds(bounds);
 
-  attackSlider.setBounds({25, 250, 100, 100});
-  attackLabel.setBounds({50, 340, 100, 40});
+  attackSlider.setBounds({50, 250, 100, 100});
+  attackLabel.setBounds({75, 332, 100, 40});
 
-  thresholdSlider.setBounds({25, 125, 100, 100});
-  thresholdLabel.setBounds({45, 215, 100, 40});
+  thresholdSlider.setBounds({50, 125, 100, 100});
+  thresholdLabel.setBounds({64, 207, 100, 40});
 
-  releaseSlider.setBounds({475, 250, 100, 100});
-  releaseLabel.setBounds({475, 340, 100, 40});
+  releaseSlider.setBounds({425, 250, 100, 100});
+  releaseLabel.setBounds({444, 332, 100, 40});
 
-  ratioSlider.setBounds({475, 125, 100, 100});
-  ratioLabel.setBounds({475, 215, 100, 40});
+  ratioSlider.setBounds({425, 125, 100, 100});
+  ratioLabel.setBounds({455, 207, 100, 40});
 }
 }  // namespace compressedor
