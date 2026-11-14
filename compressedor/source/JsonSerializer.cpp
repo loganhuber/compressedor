@@ -8,6 +8,7 @@ namespace compressedor {
         float attack;
         float release;
         float ratio;
+        float makeup;
 
       static constexpr auto marshallingVersion = 1;
 
@@ -30,7 +31,8 @@ namespace compressedor {
         archive(named("threshold", t.threshold),
                 named("attack", t.attack),
                 named("release", t.release),
-                named("ratio", t.ratio)
+                named("ratio", t.ratio),
+                named("makeup", t.makeup)
             );
 
       }
@@ -41,7 +43,8 @@ namespace compressedor {
         .threshold = parameters.threshold.get(),
         .attack = parameters.attack.get(),
         .release = parameters.release.get(),
-        .ratio = parameters.ratio.get()
+        .ratio = parameters.ratio.get(),
+        .makeup = parameters.makeup.get()
         
       };
     }
@@ -87,6 +90,7 @@ juce::Result JsonSerializer::deserialize(juce::InputStream& input,
   parameters.attack = parsedParameters->attack;
   parameters.release = parsedParameters->release;
   parameters.ratio = parsedParameters->ratio;
+  parameters.makeup = parsedParameters->makeup;
 
 
   return juce::Result::ok();
