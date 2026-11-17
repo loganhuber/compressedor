@@ -76,6 +76,7 @@ namespace compressedor {
             compressor.setRatio(20.f);
             compressor.setRelease(3.f);
             compressor.setThreshold(threshold.getCurrentValue());
+            
 
             threshold.reset(sampleRate, .1f);
             attack.reset(sampleRate, 0.1f);
@@ -152,12 +153,8 @@ namespace compressedor {
 
             juce::SmoothedValue<float> saturation = 0.f;
 
-
             std::array<juce::dsp::IIR::Filter<float>, 2> midFilters;
             std::array<juce::dsp::IIR::Filter<float>, 2> highFilters;
-
-
-
 
     };
 } // namespace compressedor

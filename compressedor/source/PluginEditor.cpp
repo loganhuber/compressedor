@@ -83,8 +83,8 @@ void PluginEditor::resized() {
   ratioSlider.setBounds({425, 125, 100, 100});
   ratioLabel.setBounds({455, 207, 100, 40});
 
-  makeupSlider.setBounds({245, 150, 100, 100});
-  makeupLabel.setBounds({260, 232, 100, 40});
+  makeupSlider.setBounds({230, 150, 100, 100});
+  makeupLabel.setBounds({250, 232, 100, 40});
 
 }
 }  // namespace compressedor
